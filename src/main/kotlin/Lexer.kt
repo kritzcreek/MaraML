@@ -2,6 +2,7 @@ sealed class Token {
     override fun toString(): String {
         return javaClass.simpleName
     }
+
     data class Number(val n: Int) : Token()
     data class Variable(val v: String) : Token()
     object Lambthere : Token()
@@ -9,6 +10,9 @@ sealed class Token {
     object KlammerLinks : Token()
     object KlammerRechts : Token()
     object EndOfFile : Token()
+    object Let : Token()
+    object In : Token()
+    object Equal : Token()
 }
 
 class Lexer(val input: String) : Iterator<Token> {
@@ -28,19 +32,24 @@ class Lexer(val input: String) : Iterator<Token> {
             }
             '(' -> Token.KlammerLinks
             ')' -> Token.KlammerRechts
+            '=' -> Token.Equal
             else -> {
-                if (lame.isDigit()){
+                if (lame.isDigit()) {
                     var str = lame.toString()
                     while (iterator.hasNext() && iterator.peek().isDigit()) {
                         str += iterator.next()
                     }
                     Token.Number(str.toInt())
-                } else if (lame.isJavaIdentifierStart()){
+                } else if (lame.isJavaIdentifierStart()) {
                     var str: String = lame.toString()
-                    while (iterator.hasNext() && iterator.peek().isJavaIdentifierPart()){
+                    while (iterator.hasNext() && iterator.peek().isJavaIdentifierPart()) {
                         str += iterator.next()
                     }
-                    Token.Variable(str)
+                    when (str) {
+                        "let" -> Token.Let
+                        "in" -> Token.In
+                        else -> Token.Variable(str)
+                    }
                 } else {
                     Token.EndOfFile
                 }
@@ -48,8 +57,8 @@ class Lexer(val input: String) : Iterator<Token> {
         }.also { consumeWhiteSpace() }
     }
 
-    fun consumeWhiteSpace(){
-        while (iterator.hasNext() && iterator.peek().isWhitespace()){
+    fun consumeWhiteSpace() {
+        while (iterator.hasNext() && iterator.peek().isWhitespace()) {
             iterator.next()
         }
     }
@@ -86,10 +95,10 @@ fun main() {
     println(interartor.peek())
     println(interartor.next())
 
-    val lexxxxer: Lexer= Lexer("293356    egdjhedg   \\ -> ((gggg))")
+    val lexxxxer: Lexer = Lexer("293356    egdjhedg   \\ -> ((gggg))")
     var token: Token
     do {
         token = lexxxxer.next()
         println(token)
-    }while (token != Token.EndOfFile)
+    } while (token != Token.EndOfFile)
 }
