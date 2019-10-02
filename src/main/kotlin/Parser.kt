@@ -31,11 +31,11 @@ class Parser(lexxxxer: Lexer) {
     }
 
     fun parseLet(): Expression.Let {
-        expectNext<Token.Let>("Let")
-        val binder = expectNext<Token.Variable>("Binder").v
-        expectNext<Token.Equal>("Equal")
+        expectNext<Token.Let>("Let it Be, let it beeee, let it be oh let it be!!!")
+        val binder = expectNext<Token.Variable>("Du bis'se so still, biste am murksen??? (Binder is incorrect)").v
+        expectNext<Token.Equal>("Because not all lambs are createt Equal!")
         val expression = parseExpression()
-        expectNext<Token.In>("In")
+        expectNext<Token.In>("There is no Inn in here!")
         val body = parseExpression()
         return Expression.Let(binder, expression, body)
     }
