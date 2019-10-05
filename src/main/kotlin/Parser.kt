@@ -25,6 +25,12 @@ class Parser(lexxxxer: Lexer) {
             is Token.Variable -> parseVariable()
             is Token.Lambthere -> parseLambthere()
             is Token.Let -> parseLet()
+            is Token.KlammerLinks -> {
+                iterator.next()
+                val result = parseExpression()
+                expectNext<Token.KlammerRechts>("Klammer Klammer Klammer Klammelion!")
+                result
+            }
             else -> null
         }
     }
@@ -84,7 +90,7 @@ fun main() {
     println(parser3.parseExpression())
     val parser4: Parser = Parser(Lexer("let id = \\ x -> x in id"))
     println(parser4.parseExpression())
-    val parser5: Parser = Parser(Lexer("f g y"))
+    val parser5: Parser = Parser(Lexer("f (g y)"))
     println(parser5.parseExpression())
 }
 
