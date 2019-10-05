@@ -3,12 +3,29 @@ class Parser(lexxxxer: Lexer) {
     val iterator = PeakableIterator(lexxxxer)
 
     fun parseExpression(): Expression {
+        val expressions = mutableListOf<Expression>()
+        while (true) {
+            val atomi = parseAtom()
+            if (atomi == null) {
+                break
+            } else {
+                expressions += atomi
+            }
+        }
+        if (expressions.isEmpty()){
+            throw Exception("Ich kann so nicht arbeiten!!!")
+        } else {
+            return expressions.drop(1).fold(expressions.first(),{accAkut, expri -> Expression.App(accAkut, expri)})
+        }
+    }
+
+    fun parseAtom(): Expression? {
         return when (iterator.peek()) {
             is Token.Number -> parseIntLiteral()
             is Token.Variable -> parseVariable()
             is Token.Lambthere -> parseLambthere()
             is Token.Let -> parseLet()
-            else -> throw Exception("Ich kann so nicht arbeiten!!!")
+            else -> null
         }
     }
 
@@ -67,5 +84,7 @@ fun main() {
     println(parser3.parseExpression())
     val parser4: Parser = Parser(Lexer("let id = \\ x -> x in id"))
     println(parser4.parseExpression())
+    val parser5: Parser = Parser(Lexer("f g y"))
+    println(parser5.parseExpression())
 }
 
